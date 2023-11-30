@@ -17,7 +17,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-#head button,
+#head #home,
 #home:after {
     cursor: pointer;
   width: 150px;
@@ -110,8 +110,8 @@ body {
 }
 
 @media (min-width: 768px) {
-  .button-49,
-  .button-49:after {
+  #home-49,
+  #home-49:after {
     width: 200px;
     height: 86px;
     line-height: 88px;
@@ -149,4 +149,23 @@ img{
 }
 .category img:hover {
   transform: scale(1.05);
+}
+#delete{
+  background-color: red;
+  font-size: large;
+  color: wheat;
+}
+
+
+#order{
+  background-color:chartreuse;
+  color: black;
+  width:30%;
+  height: 100px;
+  font-size: 25px;
+  
+}
+#sum{
+  color:black;
+  font-size: large;
 }

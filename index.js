@@ -67,9 +67,23 @@ async function addToCart(productId) {
     }
     localStorage.carts = JSON.stringify(carts)
     console.log(carts);
+    getSum()
     // updateDB(cart)
 }
 
+async function reduceFromcart(productId){
+    let carts = JSON.parse(localStorage.carts)
+    let index = carts.findIndex(item => item.id == productId)
+
+    if(index !== -1){
+        carts[index].amount--;
+        if(carts[index].amount <=0){
+            return
+        }
+    }
+    localStorage.carts= JSON.stringify(carts)
+    getSum()
+}
 
 async function createCategoriesDiv() {
     let categories = await getAllCategories();
@@ -94,13 +108,83 @@ createCategoriesDiv()
 
 
 
+async function showCart(){
+    let show = JSON.parse(localStorage.getItem('carts')) || [];
+    document.getElementById('categories').innerHTML = ''
+    let categoriesContainer = document.getElementById('categories');
+    for (let item of show) {
+        let response =await doFetch(`https://dummyjson.com/products/${item.id}`,"GET")
+        let categoryDiv = document.createElement('div');
+        categoryDiv.className = 'category'
+        categoryDiv.textContent = response.title;
+        categoryDiv.id = response.id;
+
+        let img = document.createElement("img")
+        img.src = `${response.images[0]}`
+
+        let price = document.createElement("h2")
+        price.innerText = `price:${response.price}$`
+      
 
 
+        let brand =  document.createElement("h5")
+        brand.innerText = `brand:${response.brand}`
 
+        let amount = document.createElement("h5")
+        amount.innerText = `amount ${item.amount}`
 
+        let button = document.createElement("button")
+        button.innerHTML = '+'
+        button.onclick = function(){
+            addToCart(categoryDiv.id)
+        }
+        let br = document.createElement("br")
+        let br1 = document.createElement("br")
 
+        let buttonDelete = document.createElement("button")
+        buttonDelete.innerHTML = 'deleteItem'
+        buttonDelete.id = "delete"
+        buttonDelete.onclick = function(){
+            deleteItem(categoryDiv.id)
+        }
+        let reduce = document.createElement("button")
+        reduce.innerHTML= "-"
+        reduce.id = "reduce"
+        reduce.onclick = function(){
+            reduceFromcart(categoryDiv.id)
+        }
+        categoryDiv.appendChild(img)
+        categoryDiv.appendChild(price)
+        categoryDiv.appendChild(brand)
+        categoryDiv.appendChild(amount)
+        categoryDiv.appendChild(button)
+        categoryDiv.appendChild(br)
+        categoryDiv.appendChild(br1)
+        categoryDiv.appendChild(buttonDelete)
+        categoryDiv.appendChild(reduce)
+        categoriesContainer.appendChild(categoryDiv)
+}
+}
 
+function deleteItem(product){
+    let itemCarts = JSON.parse(localStorage.getItem('carts'))
+    let update = itemCarts.filter(item => item.id !== product )
+    localStorage.carts = JSON.stringify(update)
+    getSum()
+}
 
+async function getSum(){
+    let show = JSON.parse(localStorage.getItem('carts')) || [];
+    let sum = 0;
+    let order = document.getElementById("sum");
+    for (let item of show) {
+        let response =await doFetch(`https://dummyjson.com/products/${item.id}`,"GET")
+        sum += (response.price) * (item.amount)
+    }
+    
+    order.innerText = `price sum: ${sum}`
+}
+getSum()
 
 
 

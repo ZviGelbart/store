@@ -112,8 +112,10 @@ async function showCart(){
     let show = JSON.parse(localStorage.getItem('carts')) || [];
     document.getElementById('categories').innerHTML = ''
     let categoriesContainer = document.getElementById('categories');
-    for (let item of show) {
-        let response =await doFetch(`https://dummyjson.com/products/${item.id}`,"GET")
+    const jsons = await Promise.all(show.map(item => doFetch(`https://dummyjson.com/products/${item.id}`,"GET")))
+    
+    for (let response of jsons) {
+        const item = show.find(i => i.id = response.id)
         let categoryDiv = document.createElement('div');
         categoryDiv.className = 'category'
         categoryDiv.textContent = response.title;
@@ -192,86 +194,6 @@ getSum()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // async function start(){
 //    let categories = await getAllCategories();
 //    let c = categories[3]
@@ -287,6 +209,3 @@ getSum()
 
 
 // #############################################################################################
-
-
-
